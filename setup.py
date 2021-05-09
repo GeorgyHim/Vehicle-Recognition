@@ -5,6 +5,6 @@ setup(
     version='0.1',
     author='georgyhim1997',
     author_email='georgyhim1997@yandex.ru',
-    url='TODO',
+    url='https://github.com/GeorgyHim/Vehicle-Recognition',
     packages=find_packages()
 )
