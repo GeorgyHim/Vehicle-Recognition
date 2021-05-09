@@ -1,5 +1,7 @@
 import tensorflow as tf
 import cv2
+from datetime import datetime
+import os.path
 
 from model.yolo import YOLOv3
 from utils.utils import load_class_names, draw_boxes_frame
@@ -23,11 +25,13 @@ def detect(path, iou_threshold, confidence_threshold):
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         fps = video.get(cv2.CAP_PROP_FPS)
         frame_size = (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        outfile_name = f'./results/detection_for_{path}.mp4'
+        basename = os.path.basename(path)
+        outfile_name = f'./results/detection_for_{basename}.mp4'
         out = cv2.VideoWriter(outfile_name, fourcc, fps, frame_size)
         print(f'Video will be saved at {outfile_name}')
         print('Press q to quit')
         while True:
+            tm = datetime.now()
             retval, frame = video.read()
             if not retval:
                 break
@@ -40,5 +44,8 @@ def detect(path, iou_threshold, confidence_threshold):
             if key == ord('q'):
                 break
             out.write(frame)
+            print(f'Frame processed in {datetime.now() - tm} sec')
         cv2.destroyAllWindows()
         video.release()
+
+    print('Done')
