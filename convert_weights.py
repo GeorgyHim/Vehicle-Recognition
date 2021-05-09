@@ -136,7 +136,8 @@ def load_weights_tiny(variables, filename):
 
 def convert_weights():
     save_path = './weights/model.ckpt'
-    if os.path.exists(save_path):
+    if os.path.exists(f'{save_path}.index'):
+        print('Model is already converted')
         return
 
     model = YOLOv3(
