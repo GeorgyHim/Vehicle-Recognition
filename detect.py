@@ -7,7 +7,7 @@ from model.yolo import YOLOv3
 from utils.utils import load_class_names, draw_boxes_frame
 
 
-def detect(path, iou_threshold, confidence_threshold):
+def detect(path, log, iou_threshold, confidence_threshold):
     class_names, n_classes = load_class_names()
     model = YOLOv3(
         n_classes=n_classes,
@@ -44,7 +44,8 @@ def detect(path, iou_threshold, confidence_threshold):
             if key == ord('q'):
                 break
             out.write(frame)
-            print(f'Frame processed in {datetime.now() - tm} sec')
+            if log:
+                print(f'Frame processed in {datetime.now() - tm} sec')
         cv2.destroyAllWindows()
         video.release()
 
