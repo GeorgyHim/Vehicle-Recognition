@@ -136,7 +136,7 @@ class YOLOv3(object):
         """
         Generate Computation Graph
         """
-        with tf.variable_scope(self.scope):
+        with tf.variable_scope(self.scope, reuse=True):
             if self.data_format == 'channels_first':
                 inputs = tf.transpose(inputs, [0, 3, 1, 2])
 
