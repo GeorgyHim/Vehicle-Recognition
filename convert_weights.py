@@ -88,52 +88,6 @@ def load_weights(variables, filename):
     return assign_ops
 
 
-def load_weights_tiny(variables, filename):
-    """
-    Loads official pretrained YOLOv3-tiny weights
-    """
-    with open(filename, "rb") as f:
-        print("Loading weights from \"" + filename + "\"")
-
-        # Skip 5 first values
-        _ = np.fromfile(f, dtype=np.int32, count=5)
-        weights = np.fromfile(f, dtype=np.float32)
-
-        assign_ops = []
-        offset = 0
-
-        # Load weights for Darknet part.
-        # Each convolution layer has batch normalization.
-        for i in range(7):
-            idx = 5 * i
-            assign_ops, offset = load_batch_norm(idx, variables, weights, assign_ops, offset)
-
-        # Loading weights for Yolo part.
-        # 3rd and 5th convolution layer has biases and no batch norm.
-        ranges = [range(0, 2), range(2, 4)]
-        unnormalized = [2, 4]
-        for j in range(2):
-            for i in ranges[j]:
-                idx = 7 * 5 + 5 * i + j * 2
-                assign_ops, offset = load_batch_norm(idx, variables, weights, assign_ops, offset)
-
-            bias = variables[7 * 5 + unnormalized[j] * 5 + j * 2 + 1]
-            shape = bias.shape.as_list()
-            num_params = np.prod(shape)
-            var_weights = weights[offset:offset + num_params].reshape(shape)
-            offset += num_params
-            assign_ops.append(tf.assign(bias, var_weights))
-
-            kernel = variables[7 * 5 + unnormalized[j] * 5 + j * 2]
-            shape = kernel.shape.as_list()
-            num_params = np.prod(shape)
-            var_weights = weights[offset:offset + num_params].reshape((shape[3], shape[2], shape[0], shape[1]))
-            var_weights = np.transpose(var_weights, (2, 3, 1, 0))
-            offset += num_params
-            assign_ops.append(tf.assign(kernel, var_weights))
-    return assign_ops
-
-
 def convert_weights():
     save_path = './weights/model.ckpt'
     if os.path.exists(f'{save_path}.index'):
