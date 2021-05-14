@@ -56,7 +56,7 @@ def darknet53(inputs, data_format):
 
     for _ in range(8):
         inputs = darknet53_residual_block(inputs, filters=128, data_format=data_format)
-    route4 = inputs # layers 36
+    route4 = inputs     # layers 36
 
     inputs = Conv2D(inputs, filters=512, kernel_size=3, strides=2, data_format=data_format)
     inputs = BatchNormalization(inputs, data_format=data_format)
@@ -64,7 +64,7 @@ def darknet53(inputs, data_format):
 
     for _ in range(8):
         inputs = darknet53_residual_block(inputs, filters=256, data_format=data_format)
-    route2 = inputs # layers 61
+    route2 = inputs     # layers 61
 
     inputs = Conv2D(inputs, filters=1024, kernel_size=3, strides=2, data_format=data_format)
     inputs = BatchNormalization(inputs, data_format=data_format)
