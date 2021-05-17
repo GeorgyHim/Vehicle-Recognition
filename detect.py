@@ -7,7 +7,9 @@ from model.yolo import YOLOv3
 from utils.utils import load_class_names, draw_boxes_frame
 
 
-def detect(path, log, iou_threshold, confidence_threshold):
+def detect(path, log):
+    iou_threshold = 0.5
+    confidence_threshold = 0.5
     class_names, n_classes = load_class_names()
     model = YOLOv3(
         n_classes=n_classes,
