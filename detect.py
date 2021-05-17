@@ -7,7 +7,7 @@ from model.yolo import YOLOv3
 from utils.utils import load_class_names, draw_boxes_frame
 
 
-def detect(path, log):
+def detect(path, log, display):
     iou_threshold = 0.5
     confidence_threshold = 0.5
     class_names, n_classes = load_class_names()
@@ -22,7 +22,8 @@ def detect(path, log):
 
     with tf.Session() as sess:
         saver.restore(sess, './weights/model.ckpt')
-        # cv2.namedWindow('Detection')
+        if display:
+            cv2.namedWindow('Detection')
         video = cv2.VideoCapture(path)
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         fps = video.get(cv2.CAP_PROP_FPS)
@@ -37,11 +38,15 @@ def detect(path, log):
             retval, frame = video.read()
             if not retval:
                 break
-            resized_frame = cv2.resize(frame, dsize=tuple((x) for x in model.input_size[::-1]),
-                                       interpolation=cv2.INTER_NEAREST)
+            resized_frame = cv2.resize(
+                frame, dsize=tuple((x) for x in model.input_size[::-1]), interpolation=cv2.INTER_NEAREST
+            )
             result = sess.run(detections, feed_dict={inputs: [resized_frame]})
             draw_boxes_frame(frame, frame_size, result, class_names, model.input_size)
-            # cv2.imshow('Detections', frame)
+
+            if display:
+                cv2.imshow('Detections', frame)
+
             key = cv2.waitKey(1) & 0xFF
             if key == ord('q'):
                 break
