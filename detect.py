@@ -8,13 +8,11 @@ from utils.utils import load_class_names, draw_boxes_frame
 
 
 def detect(path, log, display):
-    iou_threshold = 0.5
-    confidence_threshold = 0.5
+    iou = 0.5
+    confidence = 0.5
     class_names, n_classes = load_class_names()
     model = YOLOv3(
-        n_classes=n_classes,
-        iou_threshold=iou_threshold,
-        confidence_threshold=confidence_threshold
+        n_classes=n_classes, iou_threshold=iou, confidence_threshold=confidence
     )
     inputs = tf.placeholder(tf.float32, [1, *model.input_size, 3])
     detections = model(inputs)
